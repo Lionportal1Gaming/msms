@@ -14,7 +14,8 @@
     "check": "npm run lint && npm run test && node scripts/validate-release.mjs",
     "release:bootstrap": "node scripts/bootstrap-github-org-repo.mjs",
     "release:repo-check": "node scripts/check-github-org.mjs",
-    "release:preflight": "node scripts/validate-release.mjs --require-gh --require-remote",
+    "release:preflight": "node scripts/release-preflight.mjs",
+    "release:stable-dry-run": "node scripts/stable-release-dry-run.mjs",
     "release:verify": "node scripts/verify-github-release.mjs",
     "tauri": "tauri"
   },

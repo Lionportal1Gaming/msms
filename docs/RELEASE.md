@@ -17,10 +17,11 @@
    `gh auth login -h github.com`
 2. Create or attach the canonical org repo:
    `npm run release:bootstrap`
-3. Verify the local checkout is targeting the org repo:
+3. Push the local `main` branch to `origin` if the GitHub repo is still empty so the default branch can be set correctly.
+4. Verify the local checkout is targeting the org repo:
    `npm run release:repo-check`
-4. Confirm the repository is private, the default branch is `main`, and GitHub Actions is enabled.
-5. Configure the required repository variables and secrets:
+5. Confirm the repository is private, the default branch is `main`, and GitHub Actions is enabled.
+6. Configure the required repository variables and secrets:
    Repository variables:
    `MSMS_UPDATER_PUBLIC_KEY`
    `MSMS_UPDATER_STABLE_ENDPOINT`
@@ -28,7 +29,16 @@
    Repository secrets:
    `TAURI_SIGNING_PRIVATE_KEY`
    `TAURI_SIGNING_PRIVATE_KEY_PASSWORD`
-6. Add branch protection on `main` with CI required before release tags are pushed.
+7. Add branch protection on `main` with required status checks before release tags are pushed.
+
+## Stable Release Gates
+
+- Stable tags must use `vX.Y.Z`.
+- The GitHub repository must stay private under `Lionportal1Gaming/msms`.
+- `main` must be the default branch.
+- GitHub Actions must be enabled.
+- The required repository variables and secrets must be present before a stable tag is pushed.
+- `main` must have branch protection with required status checks enabled.
 
 ## MVP Platform Bar
 
@@ -38,12 +48,27 @@
 ## Local Preflight
 
 1. Run `npm run check`.
-2. Verify GitHub CLI, `origin`, and org ownership with `npm run release:preflight`.
+2. Verify GitHub CLI, `origin`, private-repo access, repo settings, and org ownership with `npm run release:preflight`.
 3. Confirm the updater environment values are present locally if you want to dry-run release validation:
    `MSMS_UPDATER_PUBLIC_KEY`, `MSMS_UPDATER_STABLE_ENDPOINT`, `MSMS_UPDATER_BETA_ENDPOINT`
 4. For a tagged build candidate, run:
-   `node scripts/validate-release.mjs --channel stable --tag vX.Y.Z --require-gh --require-remote`
-   Beta tags use `--channel beta --tag vX.Y.Z-beta.N --require-gh --require-remote`.
+   `npm run release:preflight -- --channel stable --tag vX.Y.Z`
+   Beta tags use `npm run release:preflight -- --channel beta --tag vX.Y.Z-beta.N`.
+
+## First Stable Release Dry Run
+
+Use this flow for the first live MVP rehearsal against the org repo after the stable tag has been pushed and the release workflow has finished:
+
+1. Run:
+   `npm run release:stable-dry-run -- vX.Y.Z`
+2. Confirm the command resolves `gh` access against `Lionportal1Gaming/msms`, not a personal account.
+3. Confirm the stable GitHub Release is published, not marked prerelease, and includes:
+   macOS installer or updater bundle assets
+   Windows installer assets
+   Linux build assets
+   `latest.json` updater metadata
+4. Confirm the stable updater feed points at the published `latest.json`.
+5. Complete the macOS and Windows smoke checks before calling the release candidate ready.
 
 ## Release Checklist
 
@@ -63,7 +88,7 @@
    `npm run release:verify -- vX.Y.Z`
    Beta tags use `npm run release:verify -- vX.Y.Z-beta.N`
    All release inspection must resolve to `Lionportal1Gaming/msms`, not a personal account.
-   The verification step must confirm both installer assets and updater metadata assets are present on the GitHub Release.
+   Stable verification must confirm macOS, Windows, Linux, and updater metadata assets are present on the GitHub Release.
 9. Publish updater metadata to the matching channel feed:
    Stable feed: `MSMS_UPDATER_STABLE_ENDPOINT`
    Beta feed: `MSMS_UPDATER_BETA_ENDPOINT`

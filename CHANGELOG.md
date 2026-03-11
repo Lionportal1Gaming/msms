@@ -8,11 +8,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- First stable release dry-run tooling with a dedicated `release:stable-dry-run` command for `vX.Y.Z` GitHub Release rehearsal against `Lionportal1Gaming/msms`.
 - GitHub org bootstrap tooling for the canonical `Lionportal1Gaming/msms` repository, including org-ownership checks and a private-repo bootstrap script.
 - Release preflight now validates `origin`, GitHub org ownership, and org-scoped GitHub Release verification instead of relying on the active personal account context.
 - Release docs now define `Lionportal1Gaming/msms` as the official MVP push/release target and document required org repo settings.
 - MVP release-hardening flow with `gh`-based local preflight, GitHub release verification, and explicit macOS/Windows release gates.
 - Release validation now checks Tauri config version alignment, updater config slots, and tag/channel consistency for stable and beta releases.
+- GitHub repo checks now validate private visibility, Actions availability, required repo variables/secrets, and `main` branch protection before stable release work.
+- Stable release verification now checks for macOS, Windows, Linux, and updater metadata assets on the published GitHub Release.
 - Release docs now include platform smoke-test expectations and an MVP readiness checklist.
 - Catalog-backed Vanilla provisioning with Mojang release selection, preflight validation, and pinned per-server Java runtime selection.
 - Multi-step provisioning workflow with full `server.properties` editing before first boot and review-stage validation feedback.

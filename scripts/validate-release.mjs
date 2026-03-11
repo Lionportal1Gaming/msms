@@ -1,7 +1,14 @@
 import fs from "node:fs";
 import path from "node:path";
 import { execFileSync } from "node:child_process";
-import { expectedRepoSlug, parseGithubArgs, remoteMatchesOrgRepo } from "./github-org-config.mjs";
+import {
+  expectedRepoSlug,
+  parseGithubArgs,
+  releaseVersionFromTag,
+  remoteMatchesOrgRepo,
+  REQUIRED_REPO_SECRETS,
+  REQUIRED_REPO_VARIABLES
+} from "./github-org-config.mjs";
 
 const root = process.cwd();
 const args = parseArgs(process.argv.slice(2));
@@ -120,9 +127,14 @@ if (args.tag) {
   if (!args.tag.startsWith("v")) {
     fail(`Release tags must start with v. Received ${args.tag}.`);
   }
-  const tagVersion = args.tag.slice(1);
+  const tagVersion = releaseVersionFromTag(args.tag);
+  if (!tagVersion) {
+    fail(`Release tag ${args.tag} must use vX.Y.Z or vX.Y.Z-beta.N format.`);
+  }
   if (tagVersion !== packageVersion) {
-    fail(`Release tag ${args.tag} does not match package version ${packageVersion}.`);
+    fail(
+      `Release tag ${args.tag} does not match package version ${packageVersion}.`
+    );
   }
 }
 
@@ -212,13 +224,7 @@ if (args.requireRemote) {
 }
 
 if (args.requireSecrets) {
-  const requiredEnv = [
-    "MSMS_UPDATER_PUBLIC_KEY",
-    "MSMS_UPDATER_STABLE_ENDPOINT",
-    "MSMS_UPDATER_BETA_ENDPOINT",
-    "TAURI_SIGNING_PRIVATE_KEY",
-    "TAURI_SIGNING_PRIVATE_KEY_PASSWORD"
-  ];
+  const requiredEnv = [...REQUIRED_REPO_VARIABLES, ...REQUIRED_REPO_SECRETS];
   for (const name of requiredEnv) {
     if (isMissingOrPlaceholder(process.env[name] ?? "")) {
       fail(`Missing or placeholder release secret/environment value: ${name}.`);

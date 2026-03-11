@@ -17,6 +17,7 @@ Use this checklist to decide whether a build is safe to tag for the MVP release 
 - `npm run release:repo-check` passes.
 - `npm run check` passes.
 - `npm run release:preflight` passes.
+- `npm run release:stable-dry-run -- vX.Y.Z` passes for the first stable tag candidate after the GitHub Release is published.
 - Release validation confirms version alignment, changelog presence, updater config readiness, and tag/channel consistency.
 
 ## GitHub Org Readiness
@@ -25,7 +26,9 @@ Use this checklist to decide whether a build is safe to tag for the MVP release 
 - Official pushes and release tags target the org repo, not a personal account.
 - GitHub Releases for MVP installers and updater metadata are published from `Lionportal1Gaming/msms`.
 - Repository variables and signing secrets are configured before the first release tag.
-- GitHub Release verification confirms installer assets and updater metadata assets are present.
+- GitHub Actions is enabled for the private repo.
+- `main` is the default branch and has branch protection with required status checks.
+- GitHub Release verification confirms stable release assets for macOS, Windows, Linux, and updater metadata are present.
 
 ## Platform Sign-Off
 

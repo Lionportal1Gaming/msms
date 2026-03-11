@@ -1,5 +1,10 @@
 import { execFileSync } from "node:child_process";
-import { expectedRepoSlug, parseGithubArgs } from "./github-org-config.mjs";
+import {
+  expectedRepoSlug,
+  isStableTag,
+  parseGithubArgs,
+  REQUIRED_STABLE_RELEASE_ASSET_GROUPS
+} from "./github-org-config.mjs";
 
 const values = process.argv.slice(2);
 const { org, repo } = parseGithubArgs(values);
@@ -62,7 +67,18 @@ if (!Array.isArray(release.assets) || release.assets.length === 0) {
   throw new Error(`Expected ${tag} to include release assets in ${expectedRepoSlug(org, repo)}.`);
 }
 
-if (!release.assets.some((asset) => asset.name?.endsWith(".json"))) {
+if (isStableTag(tag)) {
+  for (const group of REQUIRED_STABLE_RELEASE_ASSET_GROUPS) {
+    const matched = release.assets.some((asset) =>
+      group.patterns.some((pattern) => pattern.test(asset.name ?? ""))
+    );
+    if (!matched) {
+      throw new Error(
+        `Expected stable release ${tag} to include a ${group.label} asset in ${expectedRepoSlug(org, repo)}.`
+      );
+    }
+  }
+} else if (!release.assets.some((asset) => asset.name?.endsWith(".json"))) {
   throw new Error(
     `Expected ${tag} to include updater metadata (.json) assets in ${expectedRepoSlug(org, repo)}.`
   );

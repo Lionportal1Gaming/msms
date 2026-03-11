@@ -33,6 +33,7 @@ Provisioning is catalog-backed against Mojang release metadata, validates target
 - macOS and Windows are release-blocking for the MVP release path.
 - Linux remains in CI and must continue building, but Linux smoke validation is not required before shipping MVP.
 - Official pushes, tags, and GitHub Releases target `Lionportal1Gaming/msms`, not a personal account.
+- Use `npm run release:preflight` before tagging and `npm run release:stable-dry-run -- vX.Y.Z` for the first stable release rehearsal after the GitHub Release is published.
 
 ## Release Standards
 
