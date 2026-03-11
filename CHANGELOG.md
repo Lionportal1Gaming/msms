@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- GitHub org bootstrap tooling for the canonical `Lionportal1Gaming/msms` repository, including org-ownership checks and a private-repo bootstrap script.
+- Release preflight now validates `origin`, GitHub org ownership, and org-scoped GitHub Release verification instead of relying on the active personal account context.
+- Release docs now define `Lionportal1Gaming/msms` as the official MVP push/release target and document required org repo settings.
 - MVP release-hardening flow with `gh`-based local preflight, GitHub release verification, and explicit macOS/Windows release gates.
 - Release validation now checks Tauri config version alignment, updater config slots, and tag/channel consistency for stable and beta releases.
 - Release docs now include platform smoke-test expectations and an MVP readiness checklist.

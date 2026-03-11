@@ -33,3 +33,4 @@
 
 - macOS and Windows are the MVP release-blocking desktop platforms.
 - Linux builds are still produced in CI, but Linux smoke validation is not required before the MVP release is approved.
+- Official release artifacts and updater metadata are published from the `Lionportal1Gaming/msms` GitHub repository.

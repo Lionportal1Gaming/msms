@@ -2,12 +2,33 @@
 
 ## Prerequisites
 
-- `gh` is installed locally and authenticated with `gh auth login`.
+- `gh` is installed locally and authenticated with `gh auth login -h github.com`.
+- The canonical GitHub repository is the private org repo `Lionportal1Gaming/msms`.
+- `origin` points to `github.com/Lionportal1Gaming/msms`.
 - All tests pass locally and in CI.
 - `package.json`, `src-tauri/Cargo.toml`, and `src-tauri/tauri.conf.json` share the same version.
 - `CHANGELOG.md` contains the release heading and user-facing notes for the tagged version.
 - `MSMS_UPDATER_PUBLIC_KEY`, `MSMS_UPDATER_STABLE_ENDPOINT`, and `MSMS_UPDATER_BETA_ENDPOINT` are configured for release automation.
 - Tauri signing secrets are configured in GitHub Actions secrets.
+
+## First-Time GitHub Org Bootstrap
+
+1. Re-authenticate GitHub CLI if needed:
+   `gh auth login -h github.com`
+2. Create or attach the canonical org repo:
+   `npm run release:bootstrap`
+3. Verify the local checkout is targeting the org repo:
+   `npm run release:repo-check`
+4. Confirm the repository is private, the default branch is `main`, and GitHub Actions is enabled.
+5. Configure the required repository variables and secrets:
+   Repository variables:
+   `MSMS_UPDATER_PUBLIC_KEY`
+   `MSMS_UPDATER_STABLE_ENDPOINT`
+   `MSMS_UPDATER_BETA_ENDPOINT`
+   Repository secrets:
+   `TAURI_SIGNING_PRIVATE_KEY`
+   `TAURI_SIGNING_PRIVATE_KEY_PASSWORD`
+6. Add branch protection on `main` with CI required before release tags are pushed.
 
 ## MVP Platform Bar
 
@@ -17,12 +38,12 @@
 ## Local Preflight
 
 1. Run `npm run check`.
-2. Verify GitHub CLI availability and authentication with `npm run release:preflight`.
+2. Verify GitHub CLI, `origin`, and org ownership with `npm run release:preflight`.
 3. Confirm the updater environment values are present locally if you want to dry-run release validation:
    `MSMS_UPDATER_PUBLIC_KEY`, `MSMS_UPDATER_STABLE_ENDPOINT`, `MSMS_UPDATER_BETA_ENDPOINT`
 4. For a tagged build candidate, run:
-   `node scripts/validate-release.mjs --channel stable --tag vX.Y.Z --require-gh`
-   Beta tags use `--channel beta --tag vX.Y.Z-beta.N`.
+   `node scripts/validate-release.mjs --channel stable --tag vX.Y.Z --require-gh --require-remote`
+   Beta tags use `--channel beta --tag vX.Y.Z-beta.N --require-gh --require-remote`.
 
 ## Release Checklist
 
@@ -30,6 +51,7 @@
 2. Update version numbers and `CHANGELOG.md`.
 3. Run the local preflight flow:
    `npm run check`
+   `npm run release:repo-check`
    `npm run release:preflight`
 4. Create and push the Git tag for the SemVer release.
    Stable tags use `vX.Y.Z`.
@@ -40,6 +62,8 @@
 8. Inspect the published GitHub release locally:
    `npm run release:verify -- vX.Y.Z`
    Beta tags use `npm run release:verify -- vX.Y.Z-beta.N`
+   All release inspection must resolve to `Lionportal1Gaming/msms`, not a personal account.
+   The verification step must confirm both installer assets and updater metadata assets are present on the GitHub Release.
 9. Publish updater metadata to the matching channel feed:
    Stable feed: `MSMS_UPDATER_STABLE_ENDPOINT`
    Beta feed: `MSMS_UPDATER_BETA_ENDPOINT`
@@ -64,7 +88,8 @@ Linux expectation for MVP:
 
 ## Post-Release Verification
 
-- Use `gh release view <tag>` or `npm run release:verify -- <tag>` to confirm the GitHub release is published and channel-correct.
+- Use `gh release view <tag> --repo Lionportal1Gaming/msms` or `npm run release:verify -- <tag>` to confirm the GitHub release is published and channel-correct.
+- Confirm the GitHub Release contains installer artifacts and updater metadata assets.
 - Confirm the stable or beta feed serves the expected `latest.json`.
 - Confirm the in-app updater on a clean install sees the new version on the intended channel.
 

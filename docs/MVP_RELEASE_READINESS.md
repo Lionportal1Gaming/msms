@@ -13,9 +13,19 @@ Use this checklist to decide whether a build is safe to tag for the MVP release 
 ## Release Tooling
 
 - `gh` is installed and authenticated locally.
+- `origin` points to `github.com/Lionportal1Gaming/msms`.
+- `npm run release:repo-check` passes.
 - `npm run check` passes.
 - `npm run release:preflight` passes.
 - Release validation confirms version alignment, changelog presence, updater config readiness, and tag/channel consistency.
+
+## GitHub Org Readiness
+
+- The canonical private repository exists under `Lionportal1Gaming`.
+- Official pushes and release tags target the org repo, not a personal account.
+- GitHub Releases for MVP installers and updater metadata are published from `Lionportal1Gaming/msms`.
+- Repository variables and signing secrets are configured before the first release tag.
+- GitHub Release verification confirms installer assets and updater metadata assets are present.
 
 ## Platform Sign-Off
 

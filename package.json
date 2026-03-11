@@ -12,7 +12,9 @@
     "test": "vitest run --config vitest.config.ts",
     "test:watch": "vitest --config vitest.config.ts",
     "check": "npm run lint && npm run test && node scripts/validate-release.mjs",
-    "release:preflight": "node scripts/validate-release.mjs --require-gh",
+    "release:bootstrap": "node scripts/bootstrap-github-org-repo.mjs",
+    "release:repo-check": "node scripts/check-github-org.mjs",
+    "release:preflight": "node scripts/validate-release.mjs --require-gh --require-remote",
     "release:verify": "node scripts/verify-github-release.mjs",
     "tauri": "tauri"
   },

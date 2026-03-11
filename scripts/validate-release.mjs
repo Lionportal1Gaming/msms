@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { execFileSync } from "node:child_process";
+import { expectedRepoSlug, parseGithubArgs, remoteMatchesOrgRepo } from "./github-org-config.mjs";
 
 const root = process.cwd();
 const args = parseArgs(process.argv.slice(2));
@@ -17,14 +18,20 @@ function parseArgs(values) {
   const parsed = {
     channel: null,
     requireGh: false,
+    requireRemote: false,
     requireSecrets: false,
-    tag: null
+    tag: null,
+    ...parseGithubArgs(values)
   };
 
   for (let index = 0; index < values.length; index += 1) {
     const value = values[index];
     if (value === "--require-gh") {
       parsed.requireGh = true;
+      continue;
+    }
+    if (value === "--require-remote") {
+      parsed.requireRemote = true;
       continue;
     }
     if (value === "--require-secrets") {
@@ -141,7 +148,66 @@ if (args.requireGh) {
   try {
     execFileSync("gh", ["auth", "status"], { stdio: "ignore" });
   } catch {
-    fail("GitHub CLI is installed but not authenticated. Run `gh auth login` before release preflight.");
+    fail("GitHub CLI is installed but not authenticated. Run `gh auth login -h github.com` before release preflight.");
+  }
+}
+
+if (args.requireRemote) {
+  let remoteUrl = "";
+  try {
+    remoteUrl = execFileSync("git", ["remote", "get-url", "origin"], {
+      encoding: "utf8",
+      stdio: ["ignore", "pipe", "pipe"]
+    }).trim();
+  } catch {
+    fail(
+      `Git remote origin is missing. Bootstrap ${expectedRepoSlug(args.org, args.repo)} before release preflight.`
+    );
+  }
+
+  if (!remoteMatchesOrgRepo(remoteUrl, args.org, args.repo)) {
+    fail(
+      `Git remote origin must point to github.com/${args.org}/${args.repo}. Current origin is ${remoteUrl}.`
+    );
+  }
+
+  if (!args.requireGh) {
+    try {
+      execFileSync("gh", ["auth", "status"], { stdio: "ignore" });
+    } catch {
+      fail("GitHub CLI is installed but not authenticated. Run `gh auth login -h github.com` before release preflight.");
+    }
+  }
+
+  try {
+    const rawRepo = execFileSync(
+      "gh",
+      [
+        "repo",
+        "view",
+        expectedRepoSlug(args.org, args.repo),
+        "--json",
+        "owner,name"
+      ],
+      {
+        encoding: "utf8",
+        stdio: ["ignore", "pipe", "pipe"]
+      }
+    );
+    const repo = JSON.parse(rawRepo);
+    if (repo.owner?.login !== args.org) {
+      fail(
+        `GitHub repo owner mismatch. Expected ${args.org}, received ${repo.owner?.login ?? "unknown"}.`
+      );
+    }
+    if (repo.name !== args.repo) {
+      fail(`GitHub repo name mismatch. Expected ${args.repo}, received ${repo.name}.`);
+    }
+  } catch (error) {
+    if (error instanceof Error) {
+      fail(error.message);
+    }
+    fail(`Unable to verify GitHub repository ${expectedRepoSlug(args.org, args.repo)}.`);
   }
 }
 
