@@ -58,6 +58,7 @@ jobs:
           MSMS_UPDATER_STABLE_ENDPOINT: ${{ vars.MSMS_UPDATER_STABLE_ENDPOINT }}
           MSMS_UPDATER_BETA_ENDPOINT: ${{ vars.MSMS_UPDATER_BETA_ENDPOINT }}
       - id: release_notes
+        shell: bash
         run: node scripts/extract-release-notes.mjs "${GITHUB_REF_NAME#v}"
       - uses: tauri-apps/tauri-action@v0
         env:
