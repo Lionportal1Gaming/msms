@@ -1,5 +1,8 @@
 name: Release
 
+permissions:
+  contents: write
+
 on:
   push:
     tags:
@@ -58,3 +61,29 @@ jobs:
           prerelease: ${{ steps.release_meta.outputs.channel == 'beta' }}
           includeUpdaterJson: true
           updaterJsonKeepUniversal: true
+
+  publish_updater_feed:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - id: release_meta
+        shell: bash
+        run: |
+          if [[ "${GITHUB_REF_NAME}" == *"-beta."* ]]; then
+            echo "channel=beta" >> "$GITHUB_OUTPUT"
+          else
+            echo "channel=stable" >> "$GITHUB_OUTPUT"
+          fi
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: mkdir -p .release-feed
+      - run: gh release download "${GITHUB_REF_NAME}" --repo "${GITHUB_REPOSITORY}" --pattern "latest.json" --dir .release-feed
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - run: node scripts/publish-github-pages-feed.mjs --channel "${{ steps.release_meta.outputs.channel }}" --asset-path .release-feed/latest.json
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

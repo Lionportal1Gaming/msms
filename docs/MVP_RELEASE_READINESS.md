@@ -25,6 +25,7 @@ Use this checklist to decide whether a build is safe to tag for the MVP release 
 - The canonical private repository exists under `Lionportal1Gaming`.
 - Official pushes and release tags target the org repo, not a personal account.
 - GitHub Releases for MVP installers and updater metadata are published from `Lionportal1Gaming/msms`.
+- GitHub Pages serves the updater feeds from `/updates/stable/latest.json` and `/updates/beta/latest.json`.
 - Repository variables and signing secrets are configured before the first release tag.
 - GitHub Actions is enabled for the private repo.
 - `main` is the default branch and has branch protection with required status checks.

@@ -11,6 +11,17 @@
 - `MSMS_UPDATER_PUBLIC_KEY`, `MSMS_UPDATER_STABLE_ENDPOINT`, and `MSMS_UPDATER_BETA_ENDPOINT` are configured for release automation.
 - Tauri signing secrets are configured in GitHub Actions secrets.
 
+## GitHub Pages Updater Feed
+
+The MVP updater feed is published from GitHub Pages in the canonical org repo.
+
+- Stable feed URL:
+  `https://lionportal1gaming.github.io/msms/updates/stable/latest.json`
+- Beta feed URL:
+  `https://lionportal1gaming.github.io/msms/updates/beta/latest.json`
+
+Configure the repo variables to those URLs unless you intentionally replace the feed host.
+
 ## First-Time GitHub Org Bootstrap
 
 1. Re-authenticate GitHub CLI if needed:
@@ -24,12 +35,13 @@
 6. Configure the required repository variables and secrets:
    Repository variables:
    `MSMS_UPDATER_PUBLIC_KEY`
-   `MSMS_UPDATER_STABLE_ENDPOINT`
-   `MSMS_UPDATER_BETA_ENDPOINT`
+   `MSMS_UPDATER_STABLE_ENDPOINT=https://lionportal1gaming.github.io/msms/updates/stable/latest.json`
+   `MSMS_UPDATER_BETA_ENDPOINT=https://lionportal1gaming.github.io/msms/updates/beta/latest.json`
    Repository secrets:
    `TAURI_SIGNING_PRIVATE_KEY`
    `TAURI_SIGNING_PRIVATE_KEY_PASSWORD`
 7. Add branch protection on `main` with required status checks before release tags are pushed.
+8. Enable GitHub Pages for the repository and serve from the `gh-pages` branch root.
 
 ## Stable Release Gates
 
@@ -90,8 +102,9 @@ Use this flow for the first live MVP rehearsal against the org repo after the st
    All release inspection must resolve to `Lionportal1Gaming/msms`, not a personal account.
    Stable verification must confirm macOS, Windows, Linux, and updater metadata assets are present on the GitHub Release.
 9. Publish updater metadata to the matching channel feed:
-   Stable feed: `MSMS_UPDATER_STABLE_ENDPOINT`
-   Beta feed: `MSMS_UPDATER_BETA_ENDPOINT`
+   The release workflow publishes `latest.json` automatically to the GitHub Pages feed for the matching channel.
+   Stable feed: `https://lionportal1gaming.github.io/msms/updates/stable/latest.json`
+   Beta feed: `https://lionportal1gaming.github.io/msms/updates/beta/latest.json`
 10. Validate updater metadata, installer signatures, and smoke-test installation.
 11. Confirm the in-app updater sees the new version on the intended channel.
 

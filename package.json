@@ -13,6 +13,7 @@
     "test:watch": "vitest --config vitest.config.ts",
     "check": "npm run lint && npm run test && node scripts/validate-release.mjs",
     "release:bootstrap": "node scripts/bootstrap-github-org-repo.mjs",
+    "release:publish-feed": "node scripts/publish-github-pages-feed.mjs",
     "release:repo-check": "node scripts/check-github-org.mjs",
     "release:preflight": "node scripts/release-preflight.mjs",
     "release:stable-dry-run": "node scripts/stable-release-dry-run.mjs",

@@ -41,5 +41,6 @@ Provisioning is catalog-backed against Mojang release metadata, validates target
 - Semantic Versioning for releases
 - `CHANGELOG.md` updated for user-facing changes
 - Signed installers and updater metadata for production releases
+- MVP updater feeds are published from GitHub Pages at `/updates/stable/latest.json` and `/updates/beta/latest.json`
 
 Additional guidance lives in [docs/HANDBOOK.md](/Users/alextaylor/Documents/Coding/codex-workspace/project02/docs/HANDBOOK.md).

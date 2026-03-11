@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- GitHub Pages-based stable and beta updater feed publishing for MVP release automation, using `gh-pages` as the canonical `latest.json` host.
 - First stable release dry-run tooling with a dedicated `release:stable-dry-run` command for `vX.Y.Z` GitHub Release rehearsal against `Lionportal1Gaming/msms`.
 - GitHub org bootstrap tooling for the canonical `Lionportal1Gaming/msms` repository, including org-ownership checks and a private-repo bootstrap script.
 - Release preflight now validates `origin`, GitHub org ownership, and org-scoped GitHub Release verification instead of relying on the active personal account context.
