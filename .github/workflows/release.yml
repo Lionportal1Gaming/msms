@@ -1,0 +1,60 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+      - "v*.*.*-beta.*"
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+          - os: windows-latest
+          - os: macos-latest
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: release_meta
+        shell: bash
+        run: |
+          if [[ "${GITHUB_REF_NAME}" == *"-beta."* ]]; then
+            echo "channel=beta" >> "$GITHUB_OUTPUT"
+          else
+            echo "channel=stable" >> "$GITHUB_OUTPUT"
+          fi
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - uses: dtolnay/rust-toolchain@stable
+      - run: npm ci
+      - run: node scripts/validate-release.mjs --channel "${{ steps.release_meta.outputs.channel }}" --tag "${{ github.ref_name }}" --require-secrets
+        env:
+          MSMS_UPDATER_PUBLIC_KEY: ${{ vars.MSMS_UPDATER_PUBLIC_KEY }}
+          MSMS_UPDATER_STABLE_ENDPOINT: ${{ vars.MSMS_UPDATER_STABLE_ENDPOINT }}
+          MSMS_UPDATER_BETA_ENDPOINT: ${{ vars.MSMS_UPDATER_BETA_ENDPOINT }}
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
+      - run: node scripts/prepare-tauri-config.mjs --channel "${{ steps.release_meta.outputs.channel }}" --write
+        env:
+          MSMS_UPDATER_PUBLIC_KEY: ${{ vars.MSMS_UPDATER_PUBLIC_KEY }}
+          MSMS_UPDATER_STABLE_ENDPOINT: ${{ vars.MSMS_UPDATER_STABLE_ENDPOINT }}
+          MSMS_UPDATER_BETA_ENDPOINT: ${{ vars.MSMS_UPDATER_BETA_ENDPOINT }}
+      - id: release_notes
+        run: node scripts/extract-release-notes.mjs "${GITHUB_REF_NAME#v}"
+      - uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
+        with:
+          tagName: ${{ github.ref_name }}
+          releaseName: "MSMS ${{ github.ref_name }} (${{ steps.release_meta.outputs.channel }})"
+          releaseBody: ${{ steps.release_notes.outputs.body }}
+          prerelease: ${{ steps.release_meta.outputs.channel == 'beta' }}
+          includeUpdaterJson: true
+          updaterJsonKeepUniversal: true

@@ -1,0 +1,42 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "MSMS",
+  "version": "0.1.0",
+  "identifier": "com.alextaylor.msms",
+  "build": {
+    "beforeDevCommand": "npm run dev",
+    "beforeBuildCommand": "npm run build",
+    "devUrl": "http://localhost:1420",
+    "frontendDist": "../dist"
+  },
+  "app": {
+    "windows": [
+      {
+        "title": "MSMS",
+        "width": 1600,
+        "height": 980,
+        "resizable": true,
+        "fullscreen": false
+      }
+    ],
+    "security": {
+      "csp": null,
+      "capabilities": ["default"]
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": "all",
+    "category": "DeveloperTool",
+    "shortDescription": "Minecraft Server Management System",
+    "longDescription": "Professional desktop operations for self-hosted Minecraft servers."
+  },
+  "plugins": {
+    "updater": {
+      "active": true,
+      "dialog": false,
+      "pubkey": "__MSMS_UPDATER_PUBLIC_KEY__",
+      "endpoints": ["__MSMS_UPDATER_STABLE_ENDPOINT__"]
+    }
+  }
+}

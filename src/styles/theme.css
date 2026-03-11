@@ -1,0 +1,41 @@
+:root {
+  color-scheme: dark;
+  font-family: "IBM Plex Sans", "Segoe UI", sans-serif;
+  background:
+    radial-gradient(circle at top left, rgba(39, 174, 96, 0.16), transparent 30%),
+    linear-gradient(180deg, #11191a 0%, #071112 100%);
+  color: #edf4ef;
+  --bg: #081214;
+  --panel: rgba(15, 25, 27, 0.88);
+  --panel-border: rgba(186, 221, 194, 0.12);
+  --accent: #6ad08e;
+  --accent-strong: #8ff0a4;
+  --text: #edf4ef;
+  --muted: #a9b9ae;
+  --danger: #ff8678;
+  --warning: #f7ce62;
+  --shadow: 0 24px 80px rgba(0, 0, 0, 0.32);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--text);
+}
+
+button,
+input,
+select {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+

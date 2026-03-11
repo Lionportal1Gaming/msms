@@ -1,0 +1,75 @@
+# Release Process
+
+## Prerequisites
+
+- `gh` is installed locally and authenticated with `gh auth login`.
+- All tests pass locally and in CI.
+- `package.json`, `src-tauri/Cargo.toml`, and `src-tauri/tauri.conf.json` share the same version.
+- `CHANGELOG.md` contains the release heading and user-facing notes for the tagged version.
+- `MSMS_UPDATER_PUBLIC_KEY`, `MSMS_UPDATER_STABLE_ENDPOINT`, and `MSMS_UPDATER_BETA_ENDPOINT` are configured for release automation.
+- Tauri signing secrets are configured in GitHub Actions secrets.
+
+## MVP Platform Bar
+
+- macOS and Windows are release-blocking for MVP.
+- Linux must continue to build in CI, but Linux smoke validation is not required before the MVP tag is considered ready.
+
+## Local Preflight
+
+1. Run `npm run check`.
+2. Verify GitHub CLI availability and authentication with `npm run release:preflight`.
+3. Confirm the updater environment values are present locally if you want to dry-run release validation:
+   `MSMS_UPDATER_PUBLIC_KEY`, `MSMS_UPDATER_STABLE_ENDPOINT`, `MSMS_UPDATER_BETA_ENDPOINT`
+4. For a tagged build candidate, run:
+   `node scripts/validate-release.mjs --channel stable --tag vX.Y.Z --require-gh`
+   Beta tags use `--channel beta --tag vX.Y.Z-beta.N`.
+
+## Release Checklist
+
+1. Merge only Conventional Commit history intended for the release.
+2. Update version numbers and `CHANGELOG.md`.
+3. Run the local preflight flow:
+   `npm run check`
+   `npm run release:preflight`
+4. Create and push the Git tag for the SemVer release.
+   Stable tags use `vX.Y.Z`.
+   Beta tags use `vX.Y.Z-beta.N`.
+5. Verify GitHub Actions passed the release validation and prepared the Tauri updater config for the matching channel.
+6. Verify GitHub Actions built signed installers for macOS and Windows, and confirm Linux still built successfully in CI.
+7. Confirm the generated GitHub release body matches the intended operator-facing release notes.
+8. Inspect the published GitHub release locally:
+   `npm run release:verify -- vX.Y.Z`
+   Beta tags use `npm run release:verify -- vX.Y.Z-beta.N`
+9. Publish updater metadata to the matching channel feed:
+   Stable feed: `MSMS_UPDATER_STABLE_ENDPOINT`
+   Beta feed: `MSMS_UPDATER_BETA_ENDPOINT`
+10. Validate updater metadata, installer signatures, and smoke-test installation.
+11. Confirm the in-app updater sees the new version on the intended channel.
+
+## MVP Smoke Checklist
+
+Run these checks on macOS and Windows before calling the release candidate ready:
+
+- First-run password setup and unlock
+- Provision a Vanilla server and confirm the pinned Java runtime is used on start
+- Start, stop, restart, and submit a console command
+- Create a backup, run it, and restore the archive
+- Check for app updates and verify the updater screen/restart-required messaging
+- Install the generated package and verify the signed installer path succeeds
+
+Linux expectation for MVP:
+
+- Release workflow build passes
+- No release-blocking smoke test is required
+
+## Post-Release Verification
+
+- Use `gh release view <tag>` or `npm run release:verify -- <tag>` to confirm the GitHub release is published and channel-correct.
+- Confirm the stable or beta feed serves the expected `latest.json`.
+- Confirm the in-app updater on a clean install sees the new version on the intended channel.
+
+## Rollback
+
+1. Revoke the affected stable or beta updater feed if the issue is severe.
+2. Publish a superseding patch release rather than rewriting version history.
+3. Record the incident and remediation steps in engineering notes.
