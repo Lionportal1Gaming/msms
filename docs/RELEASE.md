@@ -85,7 +85,7 @@ Use this flow for the first live MVP rehearsal against the org repo after the st
 ## Release Checklist
 
 1. Merge only Conventional Commit history intended for the release.
-2. Update version numbers and `CHANGELOG.md`.
+2. Update `CHANGELOG.md` so the tagged version contains the full operator-facing release narrative and `Unreleased` is left clean.
 3. Run the local preflight flow:
    `npm run check`
    `npm run release:repo-check`

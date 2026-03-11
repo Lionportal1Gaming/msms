@@ -17,4 +17,4 @@ This handbook is the index for engineering and operator documentation.
 - User-facing changes must update `CHANGELOG.md`.
 - Commits should follow Conventional Commits.
 - Releases require CI green across frontend and Rust checks.
-
+- Public `0.1.0` release artifacts are shipped from `Lionportal1Gaming/msms` with GitHub Pages-hosted updater metadata.

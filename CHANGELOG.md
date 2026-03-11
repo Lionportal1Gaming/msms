@@ -7,31 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.0] - 2026-03-11
+
 ### Added
-- GitHub Pages-based stable and beta updater feed publishing for MVP release automation, using `gh-pages` as the canonical `latest.json` host.
-- First stable release dry-run tooling with a dedicated `release:stable-dry-run` command for `vX.Y.Z` GitHub Release rehearsal against `Lionportal1Gaming/msms`.
-- GitHub org bootstrap tooling for the canonical `Lionportal1Gaming/msms` repository, including org-ownership checks and a private-repo bootstrap script.
-- Release preflight now validates `origin`, GitHub org ownership, and org-scoped GitHub Release verification instead of relying on the active personal account context.
-- Release docs now define `Lionportal1Gaming/msms` as the official MVP push/release target and document required org repo settings.
-- MVP release-hardening flow with `gh`-based local preflight, GitHub release verification, and explicit macOS/Windows release gates.
-- Release validation now checks Tauri config version alignment, updater config slots, and tag/channel consistency for stable and beta releases.
-- GitHub repo checks now validate private visibility, Actions availability, required repo variables/secrets, and `main` branch protection before stable release work.
-- Stable release verification now checks for macOS, Windows, Linux, and updater metadata assets on the published GitHub Release.
-- Release docs now include platform smoke-test expectations and an MVP readiness checklist.
+- Desktop-first Minecraft server operations for locally provisioned Vanilla servers, including a Tauri shell, Rust orchestration layer, React admin UI, and SQLite-backed application state.
+- Guided provisioning with the official Mojang release catalog, pinned Java runtime selection, installation-path planning, preflight validation, and pre-boot `server.properties` editing.
+- Local server lifecycle controls with start, stop, restart, kill, live admin console command submission, persisted console history, and server configuration editing.
+- Managed Java runtime discovery and installation workflows surfaced directly in the desktop app.
+- Manual and scheduled backups with retention controls, restore support, catch-up execution, and pre-backup `save-all` handling for running servers.
+- Local application authentication with first-run password setup plus opt-in diagnostics and operator settings management.
+- In-app updater workspace with stable and beta channel selection, release notes, install readiness messaging, and a global update notice.
+- Public GitHub release automation for `Lionportal1Gaming/msms`, including stable and beta feed support, GitHub Pages updater feeds, stable dry-run verification, and release-preflight tooling.
+- Engineering documentation covering architecture, operator workflow, release process, MVP release readiness, and contribution standards.
 
 ### Changed
-- The MVP release path now assumes the canonical `Lionportal1Gaming/msms` repository is public so GitHub Pages can host updater feeds and GitHub branch protection can gate `main`.
-- Catalog-backed Vanilla provisioning with Mojang release selection, preflight validation, and pinned per-server Java runtime selection.
-- Multi-step provisioning workflow with full `server.properties` editing before first boot and review-stage validation feedback.
-- Provisioning safety checks for managed-server port conflicts, conflicting install directories, and out-of-policy memory requests.
-- In-app updater UX with stable and beta channel selection, release notes, and install controls.
-- Global update surfacing outside Settings plus restart-required messaging after install.
-- Separate stable and beta updater feed configuration guidance for release publishing.
+- The first public release narrative now reflects the complete MVP feature set rather than only the initial scaffold.
+- The canonical distribution path is the public `Lionportal1Gaming/msms` repository with GitHub Releases for installers and GitHub Pages for updater metadata.
 
-## [0.1.0] - 2026-03-10
-
-### Added
-- Initial MSMS foundation scaffold with a Tauri desktop architecture.
-- Rust service modules for provisioning, runtime management, backups, authentication, and lifecycle control.
-- React admin dashboard covering server overview, provisioning, backups, console, and settings.
-- Release engineering baseline including CI, release workflow, documentation handbook, and changelog validation.
+### Fixed
+- Release validation now enforces org-owned GitHub repo targeting, channel-aware tag validation, required repo secrets and variables, and asset verification for stable releases.
+- Release docs, operator docs, and readiness checklists now align with the live `0.1.0` release process and public updater feed hosting model.

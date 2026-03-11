@@ -28,9 +28,12 @@
 - Stable and beta channels are tracked independently.
 - Installing an app update will gracefully stop running managed servers before the installer runs.
 - Review the published release notes in the updater panel before installing.
+- Stable updater metadata is published to `https://lionportal1gaming.github.io/msms/updates/stable/latest.json`.
+- Beta updater metadata is published to `https://lionportal1gaming.github.io/msms/updates/beta/latest.json`.
 
 ## MVP Release Support
 
 - macOS and Windows are the MVP release-blocking desktop platforms.
 - Linux builds are still produced in CI, but Linux smoke validation is not required before the MVP release is approved.
 - Official release artifacts and updater metadata are published from the `Lionportal1Gaming/msms` GitHub repository.
+- The first public release line is `0.1.0`.
