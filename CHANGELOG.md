@@ -18,6 +18,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - GitHub repo checks now validate private visibility, Actions availability, required repo variables/secrets, and `main` branch protection before stable release work.
 - Stable release verification now checks for macOS, Windows, Linux, and updater metadata assets on the published GitHub Release.
 - Release docs now include platform smoke-test expectations and an MVP readiness checklist.
+
+### Changed
+- The MVP release path now assumes the canonical `Lionportal1Gaming/msms` repository is public so GitHub Pages can host updater feeds and GitHub branch protection can gate `main`.
 - Catalog-backed Vanilla provisioning with Mojang release selection, preflight validation, and pinned per-server Java runtime selection.
 - Multi-step provisioning workflow with full `server.properties` editing before first boot and review-stage validation feedback.
 - Provisioning safety checks for managed-server port conflicts, conflicting install directories, and out-of-policy memory requests.

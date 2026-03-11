@@ -18,7 +18,7 @@ Provisioning is catalog-backed against Mojang release metadata, validates target
 - Manual and scheduled local backups
 - Local app password with secure storage abstraction
 - Opt-in diagnostics
-- Public release artifacts with private source
+- Public GitHub repo with public release artifacts and updater metadata
 
 ## Development
 

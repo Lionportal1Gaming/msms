@@ -68,8 +68,8 @@ if (githubRepo.name !== repo) {
   fail(`GitHub repository name mismatch. Expected ${repo}, received ${githubRepo.name}.`);
 }
 
-if (!githubRepo.isPrivate) {
-  fail(`Expected ${expectedRepoSlug(org, repo)} to be private for MVP release work.`);
+if (githubRepo.isPrivate !== false) {
+  fail(`Expected ${expectedRepoSlug(org, repo)} to be public for the GitHub Pages MVP release path.`);
 }
 
 if (githubRepo.defaultBranchRef?.name !== "main") {

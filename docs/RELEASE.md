@@ -3,7 +3,7 @@
 ## Prerequisites
 
 - `gh` is installed locally and authenticated with `gh auth login -h github.com`.
-- The canonical GitHub repository is the private org repo `Lionportal1Gaming/msms`.
+- The canonical GitHub repository is the public org repo `Lionportal1Gaming/msms`.
 - `origin` points to `github.com/Lionportal1Gaming/msms`.
 - All tests pass locally and in CI.
 - `package.json`, `src-tauri/Cargo.toml`, and `src-tauri/tauri.conf.json` share the same version.
@@ -31,7 +31,7 @@ Configure the repo variables to those URLs unless you intentionally replace the 
 3. Push the local `main` branch to `origin` if the GitHub repo is still empty so the default branch can be set correctly.
 4. Verify the local checkout is targeting the org repo:
    `npm run release:repo-check`
-5. Confirm the repository is private, the default branch is `main`, and GitHub Actions is enabled.
+5. Confirm the repository is public, the default branch is `main`, and GitHub Actions is enabled.
 6. Configure the required repository variables and secrets:
    Repository variables:
    `MSMS_UPDATER_PUBLIC_KEY`
@@ -46,7 +46,7 @@ Configure the repo variables to those URLs unless you intentionally replace the 
 ## Stable Release Gates
 
 - Stable tags must use `vX.Y.Z`.
-- The GitHub repository must stay private under `Lionportal1Gaming/msms`.
+- The GitHub repository must stay public under `Lionportal1Gaming/msms` for the GitHub Pages updater-feed path.
 - `main` must be the default branch.
 - GitHub Actions must be enabled.
 - The required repository variables and secrets must be present before a stable tag is pushed.
@@ -60,7 +60,7 @@ Configure the repo variables to those URLs unless you intentionally replace the 
 ## Local Preflight
 
 1. Run `npm run check`.
-2. Verify GitHub CLI, `origin`, private-repo access, repo settings, and org ownership with `npm run release:preflight`.
+2. Verify GitHub CLI, `origin`, repo settings, public Pages readiness, and org ownership with `npm run release:preflight`.
 3. Confirm the updater environment values are present locally if you want to dry-run release validation:
    `MSMS_UPDATER_PUBLIC_KEY`, `MSMS_UPDATER_STABLE_ENDPOINT`, `MSMS_UPDATER_BETA_ENDPOINT`
 4. For a tagged build candidate, run:
